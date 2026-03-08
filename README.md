@@ -1,74 +1,107 @@
 # osscontribs
 
-Aggregated monthly contributor growth statistics for major open source projects.
-No personal data is included — only monthly counts and cumulative totals.
+Aggregated contributor and commit statistics for major open source projects.
+No personal data is included.
 
 ## Installation
 
 ```r
-# Install from GitHub
 devtools::install_github("chrislongros/osscontribs")
 ```
+
+## Datasets
+
+### Signups
+
+Account registrations / first-commit dates. **Not the same as commit activity** —
+many users sign up but never commit.
+
+#### `oss_contributors` (monthly, all projects)
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `project` | character | Project name |
+| `source` | character | phabricator or github |
+| `month` | Date | First day of each month |
+| `new_contributors` | integer | New contributors that month |
+| `cumulative` | integer | Running total |
+
+- **447 rows** across 4 projects
+
+#### `oss_contributors_daily` (daily, FreeBSD only)
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `project` | character | Always "freebsd" |
+| `source` | character | Always "phabricator" |
+| `date` | Date | Signup date |
+| `new_contributors` | integer | New signups that day |
+| `cumulative` | integer | Running total |
+
+- **2,531 rows** (November 2013 – March 2026)
+
+### Commit Activity
+
+#### `oss_weekly_commits` (weekly, all projects)
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `project` | character | Project name |
+| `source` | character | Always "github" |
+| `date` | Date | Start of week (Sunday) |
+| `commits` | integer | Commits that week |
+| `cumulative_commits` | integer | Running total |
+
+- **6,307 rows** across 4 projects
+- Top 100 contributors per project (GitHub API limitation)
+
+| Project | Weeks | Total Commits |
+|---------|-------|---------------|
+| FreeBSD | 1,704 | 156,984 |
+| NetBSD | 1,627 | 111,044 |
+| OpenBSD | 1,432 | 77,472 |
+| PostgreSQL | 1,544 | 45,258 |
 
 ## Usage
 
 ```r
 library(osscontribs)
+
+# Compare signup growth
 data(oss_contributors)
-
-head(oss_contributors)
-#>   project      source      month new_contributors cumulative
-#> 1 freebsd phabricator 2013-11-01                2          2
-#> 2 freebsd phabricator 2014-01-01                1          3
-#> 3 freebsd phabricator 2014-03-01                4          7
-#> 4 freebsd phabricator 2014-04-01                1          8
-#> 5 freebsd phabricator 2014-05-01               97        105
-#> 6 freebsd phabricator 2014-06-01               31        136
-
-# Plot contributor growth across projects
 projects <- split(oss_contributors, oss_contributors$project)
 plot(NULL, xlim = range(oss_contributors$month),
      ylim = c(0, max(oss_contributors$cumulative)),
      xlab = "Date", ylab = "Total Contributors",
-     main = "Open Source Contributor Growth")
+     main = "Contributor Signups Over Time")
 cols <- c(freebsd = "red", openbsd = "orange",
           netbsd = "blue", postgresql = "purple")
 for (p in names(projects)) {
-  d <- projects[[p]]
-  lines(d$month, d$cumulative, col = cols[p], lwd = 2)
+  lines(projects[[p]]$month, projects[[p]]$cumulative, col = cols[p], lwd = 2)
 }
 legend("topleft", names(cols), col = cols, lwd = 2)
+
+# Compare commit activity
+data(oss_weekly_commits)
+projects <- split(oss_weekly_commits, oss_weekly_commits$project)
+plot(NULL, xlim = range(oss_weekly_commits$date),
+     ylim = c(0, max(oss_weekly_commits$commits)),
+     xlab = "Date", ylab = "Commits per Week",
+     main = "Weekly Commit Activity")
+for (p in names(projects)) {
+  lines(projects[[p]]$date, projects[[p]]$commits, col = cols[p])
+}
+legend("topright", names(cols), col = cols, lwd = 1)
 ```
-
-## Dataset
-
-| Column | Type | Description |
-|--------|------|-------------|
-| `project` | character | Project name |
-| `source` | character | Data source (phabricator or github) |
-| `month` | Date | First day of each month |
-| `new_contributors` | integer | New contributors that month |
-| `cumulative` | integer | Running total for that project |
-
-**447 rows** across 4 projects:
-
-| Project | Source | Months | Total Contributors |
-|---------|--------|--------|--------------------|
-| FreeBSD | Phabricator | 147 | 7,602 |
-| FreeBSD | GitHub | 89 | 100 |
-| OpenBSD | GitHub | 85 | 99 |
-| NetBSD | GitHub | 68 | 84 |
-| PostgreSQL | GitHub | 58 | 100 |
-
-Note: GitHub data is limited to the top 100 contributors by commit count.
-FreeBSD Phabricator data includes all registered users.
 
 ## Sources
 
-- FreeBSD: [reviews.freebsd.org](https://reviews.freebsd.org)
-- OpenBSD: [github.com/openbsd/src](https://github.com/openbsd/src)
-- NetBSD: [github.com/NetBSD/src](https://github.com/NetBSD/src)
-- PostgreSQL: [github.com/postgres/postgres](https://github.com/postgres/postgres)
+- FreeBSD signups: [reviews.freebsd.org](https://reviews.freebsd.org)
+- Commit data: GitHub stats API for
+  [freebsd/freebsd-src](https://github.com/freebsd/freebsd-src),
+  [openbsd/src](https://github.com/openbsd/src),
+  [NetBSD/src](https://github.com/NetBSD/src),
+  [postgres/postgres](https://github.com/postgres/postgres)
 
 ## License
 
