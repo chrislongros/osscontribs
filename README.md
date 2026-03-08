@@ -1,7 +1,26 @@
 # osscontribs
 
-Aggregated contributor and commit statistics for major open source projects.
-No personal data is included.
+Over 30 years of open source project activity, packaged for R.
+
+This dataset covers **FreeBSD**, **OpenBSD**, **NetBSD**, and **PostgreSQL** —
+four foundational projects that have shaped modern computing. The data comes
+from two sources:
+
+- **Git repositories** (cloned and parsed locally) — every commit, every author, no API limits
+- **FreeBSD Phabricator** — account signups on the code review platform
+
+No personal information is included. Authors are counted, not identified.
+
+## Why this exists
+
+Most open source research relies on GitHub API data, which caps results at the
+top 100 contributors per repo. These datasets bypass that limitation entirely
+by extracting commit logs directly from cloned repositories. The result is a
+complete picture of project activity going back to the early 1990s.
+
+Good for: time series analysis, growth modeling, changepoint detection,
+cross-project comparison, or just satisfying curiosity about how these
+projects evolved over three decades.
 
 ## Installation
 
@@ -9,100 +28,94 @@ No personal data is included.
 devtools::install_github("chrislongros/osscontribs")
 ```
 
-## Datasets
+## Datasets at a glance
 
-### Signups
+| Dataset | Rows | Granularity | Source | What it measures |
+|---------|------|-------------|--------|------------------|
+| `oss_daily_commits` | 44,939 | Daily | Git repos | Commits per day |
+| `oss_daily_authors` | 2,932 | Daily | Git repos | First-time committers per day |
+| `oss_weekly_commits` | 6,307 | Weekly | GitHub API | Commits per week (top 100 authors) |
+| `oss_contributors` | 447 | Monthly | Mixed | New signups per month |
+| `oss_contributors_daily` | 2,531 | Daily | Phabricator | FreeBSD signups per day |
 
-Account registrations / first-commit dates. **Not the same as commit activity** —
-many users sign up but never commit.
+### From git repositories (complete data)
 
-#### `oss_contributors` (monthly, all projects)
+#### `oss_daily_commits`
 
-| Column | Type | Description |
-|--------|------|-------------|
-| `project` | character | Project name |
-| `source` | character | phabricator or github |
-| `month` | Date | First day of each month |
-| `new_contributors` | integer | New contributors that month |
-| `cumulative` | integer | Running total |
-
-- **447 rows** across 4 projects
-
-#### `oss_contributors_daily` (daily, FreeBSD only)
+Daily commit counts extracted from cloned repos. This is the most complete
+commit dataset — it includes every commit, not just top contributors.
 
 | Column | Type | Description |
 |--------|------|-------------|
-| `project` | character | Always "freebsd" |
-| `source` | character | Always "phabricator" |
-| `date` | Date | Signup date |
-| `new_contributors` | integer | New signups that day |
-| `cumulative` | integer | Running total |
-
-- **2,531 rows** (November 2013 – March 2026)
-
-### Commit Activity
-
-#### `oss_weekly_commits` (weekly, all projects)
-
-| Column | Type | Description |
-|--------|------|-------------|
-| `project` | character | Project name |
-| `source` | character | Always "github" |
-| `date` | Date | Start of week (Sunday) |
-| `commits` | integer | Commits that week |
+| `project` | character | freebsd, openbsd, netbsd, or postgresql |
+| `date` | Date | Commit date |
+| `commits` | integer | Commits that day |
 | `cumulative_commits` | integer | Running total |
 
-- **6,307 rows** across 4 projects
-- Top 100 contributors per project (GitHub API limitation)
+#### `oss_daily_authors`
 
-| Project | Weeks | Total Commits |
-|---------|-------|---------------|
-| FreeBSD | 1,704 | 156,984 |
-| NetBSD | 1,627 | 111,044 |
-| OpenBSD | 1,432 | 77,472 |
-| PostgreSQL | 1,544 | 45,258 |
+Tracks when each unique author made their first commit to a project.
+Useful for measuring how quickly a project attracts new contributors.
 
-## Usage
+| Column | Type | Description |
+|--------|------|-------------|
+| `project` | character | Project name |
+| `date` | Date | Date of first commit |
+| `new_authors` | integer | New committers that day |
+| `cumulative_authors` | integer | Running total of unique committers |
+
+### From GitHub API and Phabricator
+
+#### `oss_weekly_commits`
+
+Weekly commit data from GitHub's stats API. Limited to the top 100
+contributors per project — superseded by `oss_daily_commits` for most uses,
+but kept for backward compatibility.
+
+#### `oss_contributors` / `oss_contributors_daily`
+
+Signup data — account registrations, not commit activity. Many users sign up
+but never commit, so these numbers are higher than committer counts.
+
+## Quick start
 
 ```r
 library(osscontribs)
 
-# Compare signup growth
-data(oss_contributors)
-projects <- split(oss_contributors, oss_contributors$project)
-plot(NULL, xlim = range(oss_contributors$month),
-     ylim = c(0, max(oss_contributors$cumulative)),
-     xlab = "Date", ylab = "Total Contributors",
-     main = "Contributor Signups Over Time")
+# Cumulative commits over time
+data(oss_daily_commits)
+projects <- split(oss_daily_commits, oss_daily_commits$project)
+plot(NULL, xlim = range(oss_daily_commits$date),
+     ylim = c(0, max(oss_daily_commits$cumulative_commits)),
+     xlab = "Date", ylab = "Total Commits",
+     main = "30 Years of Open Source Commits")
 cols <- c(freebsd = "red", openbsd = "orange",
           netbsd = "blue", postgresql = "purple")
 for (p in names(projects)) {
-  lines(projects[[p]]$month, projects[[p]]$cumulative, col = cols[p], lwd = 2)
+  lines(projects[[p]]$date, projects[[p]]$cumulative_commits,
+        col = cols[p], lwd = 2)
 }
 legend("topleft", names(cols), col = cols, lwd = 2)
-
-# Compare commit activity
-data(oss_weekly_commits)
-projects <- split(oss_weekly_commits, oss_weekly_commits$project)
-plot(NULL, xlim = range(oss_weekly_commits$date),
-     ylim = c(0, max(oss_weekly_commits$commits)),
-     xlab = "Date", ylab = "Commits per Week",
-     main = "Weekly Commit Activity")
-for (p in names(projects)) {
-  lines(projects[[p]]$date, projects[[p]]$commits, col = cols[p])
-}
-legend("topright", names(cols), col = cols, lwd = 1)
 ```
+
+## Project totals
+
+| Project | Total Commits | Unique Authors | Date Range |
+|---------|--------------|----------------|------------|
+| FreeBSD | 953,162 | 3,323 | 1993–2026 |
+| NetBSD | 771,519 | 898 | 1992–2026 |
+| OpenBSD | 243,309 | 400 | 1995–2026 |
+| PostgreSQL | 100,727 | 61 | 1996–2026 |
 
 ## Sources
 
-- FreeBSD signups: [reviews.freebsd.org](https://reviews.freebsd.org)
-- Commit data: GitHub stats API for
+- Git data: Cloned from
   [freebsd/freebsd-src](https://github.com/freebsd/freebsd-src),
   [openbsd/src](https://github.com/openbsd/src),
   [NetBSD/src](https://github.com/NetBSD/src),
   [postgres/postgres](https://github.com/postgres/postgres)
+- Signup data: [reviews.freebsd.org](https://reviews.freebsd.org)
 
 ## License
 
-CC0
+CC0 — use it however you like.

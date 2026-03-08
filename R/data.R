@@ -1,70 +1,88 @@
-#' Open Source Project Contributor Signups (Monthly)
+#' Phabricator Contributor Signups (Monthly)
 #'
-#' Monthly new contributor signup counts for open source projects.
-#' Data is aggregated by month with no personal information included.
-#'
-#' FreeBSD data comes from the Phabricator code review platform
-#' (reviews.freebsd.org) and represents account registrations.
-#' Other projects use GitHub commit author data (top 100 contributors
-#' by commit count), where the signup date is approximated as the
-#' date of each author's first commit.
-#'
-#' Note: signups and commit activity are different metrics. A signup
-#' does not necessarily mean the user committed code.
+#' Monthly new contributor signup counts. FreeBSD data from Phabricator,
+#' other projects from GitHub (top 100 by commit count).
 #'
 #' @format A data frame with 447 rows and 5 variables:
 #' \describe{
-#'   \item{project}{character, project name (freebsd, openbsd, netbsd, postgresql)}
+#'   \item{project}{character, project name}
 #'   \item{source}{character, data source (phabricator or github)}
 #'   \item{month}{Date, first day of each month}
-#'   \item{new_contributors}{integer, number of new contributors that month}
-#'   \item{cumulative}{integer, running total of contributors for that project}
+#'   \item{new_contributors}{integer, new contributors that month}
+#'   \item{cumulative}{integer, running total}
 #' }
-#' @source
-#' FreeBSD: \url{https://reviews.freebsd.org}
-#'
-#' GitHub mirrors: \url{https://github.com/freebsd/freebsd-src},
-#' \url{https://github.com/openbsd/src},
-#' \url{https://github.com/NetBSD/src},
-#' \url{https://github.com/postgres/postgres}
+#' @source FreeBSD: \url{https://reviews.freebsd.org}
 "oss_contributors"
 
-#' Open Source Project Contributor Signups (Daily, FreeBSD only)
+#' Phabricator Contributor Signups (Daily, FreeBSD only)
 #'
-#' Daily signup counts for the FreeBSD Phabricator code review platform.
-#' Represents account registrations, not commit activity.
-#' Suitable for time series analysis.
+#' Daily signup counts for FreeBSD Phabricator. Represents account
+#' registrations, not commit activity.
 #'
 #' @format A data frame with 2531 rows and 5 variables:
 #' \describe{
 #'   \item{project}{character, always "freebsd"}
 #'   \item{source}{character, always "phabricator"}
-#'   \item{date}{Date, the signup date}
-#'   \item{new_contributors}{integer, number of new signups that day}
-#'   \item{cumulative}{integer, running total of signups}
+#'   \item{date}{Date, signup date}
+#'   \item{new_contributors}{integer, new signups}
+#'   \item{cumulative}{integer, running total}
 #' }
-#' @source Aggregated from public Phabricator user data at
-#'   \url{https://reviews.freebsd.org}
+#' @source \url{https://reviews.freebsd.org}
 "oss_contributors_daily"
 
-#' Open Source Project Commit Activity (Weekly)
+#' Daily Commit Activity (from git repositories)
 #'
-#' Weekly commit counts for major open source projects from GitHub.
-#' This measures actual code activity, not signups. Counts are
-#' aggregated across the top 100 contributors per project (GitHub
-#' API limitation).
+#' Daily commit counts for FreeBSD, OpenBSD, NetBSD, and PostgreSQL,
+#' extracted directly from cloned git repositories. Includes all
+#' commits, not limited to top 100 authors.
 #'
-#' @format A data frame with 6307 rows and 5 variables:
+#' @format A data frame with 44,939 rows and 4 variables:
 #' \describe{
-#'   \item{project}{character, project name (freebsd, openbsd, netbsd, postgresql)}
-#'   \item{source}{character, always "github"}
-#'   \item{date}{Date, start of the week (Sunday)}
-#'   \item{commits}{integer, number of commits that week}
-#'   \item{cumulative_commits}{integer, running total of commits}
+#'   \item{project}{character, project name}
+#'   \item{date}{Date, commit date}
+#'   \item{commits}{integer, commits that day}
+#'   \item{cumulative_commits}{integer, running total}
 #' }
-#' @source
-#' GitHub mirrors: \url{https://github.com/freebsd/freebsd-src},
-#' \url{https://github.com/openbsd/src},
-#' \url{https://github.com/NetBSD/src},
-#' \url{https://github.com/postgres/postgres}
+#' @source Cloned from
+#'   \url{https://github.com/freebsd/freebsd-src},
+#'   \url{https://github.com/openbsd/src},
+#'   \url{https://github.com/NetBSD/src},
+#'   \url{https://github.com/postgres/postgres}
+"oss_daily_commits"
+
+#' Daily New Committers (from git repositories)
+#'
+#' Daily counts of authors making their first commit to each project.
+#' Extracted directly from cloned git repositories using anonymized
+#' author IDs. Includes all authors, not limited to top 100.
+#'
+#' @format A data frame with 2,932 rows and 4 variables:
+#' \describe{
+#'   \item{project}{character, project name}
+#'   \item{date}{Date, date of first commit}
+#'   \item{new_authors}{integer, new committers that day}
+#'   \item{cumulative_authors}{integer, running total of unique committers}
+#' }
+#' @source Cloned from
+#'   \url{https://github.com/freebsd/freebsd-src},
+#'   \url{https://github.com/openbsd/src},
+#'   \url{https://github.com/NetBSD/src},
+#'   \url{https://github.com/postgres/postgres}
+"oss_daily_authors"
+
+#' Weekly Commit Activity (from GitHub API)
+#'
+#' Weekly commit counts from GitHub stats API. Limited to top 100
+#' contributors per project. Superseded by \code{oss_daily_commits}
+#' which has complete data from cloned repositories.
+#'
+#' @format A data frame with 6,307 rows and 5 variables:
+#' \describe{
+#'   \item{project}{character, project name}
+#'   \item{source}{character, always "github"}
+#'   \item{date}{Date, start of week}
+#'   \item{commits}{integer, commits that week}
+#'   \item{cumulative_commits}{integer, running total}
+#' }
+#' @source GitHub stats API
 "oss_weekly_commits"

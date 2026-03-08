@@ -1,13 +1,15 @@
 Package: osscontribs
-Title: Open Source Project Contributor Growth Statistics
-Version: 0.1.0
+Title: Commit and Contributor Statistics for Major Open Source Projects
+Version: 0.2.0
 Authors@R:
     person("Christos", "Longros", , "chris.longros@gmail.com",
            role = c("aut", "cre"))
-Description: Aggregated monthly contributor statistics for major open
-    source projects. Contains no personal data -- only monthly counts
-    and cumulative totals. Projects include FreeBSD, OpenBSD, NetBSD,
-    Linux, PostgreSQL, and others.
+Description: Over 30 years of daily commit activity and contributor growth
+    for FreeBSD, OpenBSD, NetBSD, and PostgreSQL. Built from cloned git
+    repositories for complete coverage -- not limited by API quotas.
+    Includes daily commits, daily new committers, weekly aggregates, and
+    Phabricator signup data. Designed for time series analysis, growth
+    modeling, and cross-project comparison. Contains no personal data.
 License: CC0
 Encoding: UTF-8
 LazyData: true
