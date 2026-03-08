@@ -1,0 +1,17 @@
+Package: osscontribs
+Title: Open Source Project Contributor Growth Statistics
+Version: 0.1.0
+Authors@R:
+    person("Christos", "Longros", , "chris.longros@gmail.com",
+           role = c("aut", "cre"))
+Description: Aggregated monthly contributor statistics for major open
+    source projects. Contains no personal data -- only monthly counts
+    and cumulative totals. Projects include FreeBSD, OpenBSD, NetBSD,
+    Linux, PostgreSQL, and others.
+License: CC0
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Depends:
+    R (>= 3.5.0)
