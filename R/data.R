@@ -86,3 +86,24 @@
 #' }
 #' @source GitHub stats API
 "oss_weekly_commits"
+
+#' Individual Commit Timestamps (from git repositories)
+#'
+#' Every commit from FreeBSD, OpenBSD, NetBSD, and PostgreSQL with
+#' full timestamps (to the second) and anonymized author IDs.
+#' Extracted from cloned git repositories. Useful for sub-daily
+#' time series analysis, hour-of-day patterns, and per-author
+#' commit frequency.
+#'
+#' @format A data frame with 2,068,717 rows and 3 variables:
+#' \describe{
+#'   \item{project}{character, project name}
+#'   \item{timestamp}{POSIXct, commit timestamp in UTC}
+#'   \item{author_id}{character, anonymized 12-character author hash}
+#' }
+#' @source Cloned from
+#'   \url{https://github.com/freebsd/freebsd-src},
+#'   \url{https://github.com/openbsd/src},
+#'   \url{https://github.com/NetBSD/src},
+#'   \url{https://github.com/postgres/postgres}
+"oss_commits"

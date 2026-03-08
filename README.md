@@ -32,6 +32,7 @@ devtools::install_github("chrislongros/osscontribs")
 
 | Dataset | Rows | Granularity | Source | What it measures |
 |---------|------|-------------|--------|------------------|
+| `oss_commits` | 2,068,717 | Per-commit | Git repos | Every commit with timestamp and author |
 | `oss_daily_commits` | 44,939 | Daily | Git repos | Commits per day |
 | `oss_daily_authors` | 2,932 | Daily | Git repos | First-time committers per day |
 | `oss_weekly_commits` | 6,307 | Weekly | GitHub API | Commits per week (top 100 authors) |
@@ -39,6 +40,17 @@ devtools::install_github("chrislongros/osscontribs")
 | `oss_contributors_daily` | 2,531 | Daily | Phabricator | FreeBSD signups per day |
 
 ### From git repositories (complete data)
+
+#### `oss_commits`
+
+Every individual commit with full timestamp (to the second) and anonymized
+author ID. The most granular dataset — 2M+ rows across all four projects.
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `project` | character | freebsd, openbsd, netbsd, or postgresql |
+| `timestamp` | POSIXct | Commit timestamp in UTC |
+| `author_id` | character | Anonymized 12-character author hash |
 
 #### `oss_daily_commits`
 
@@ -97,6 +109,24 @@ for (p in names(projects)) {
 }
 legend("topleft", names(cols), col = cols, lwd = 2)
 ```
+
+## Plots
+
+![Cumulative Commits](plots/ts_01_cumulative_commits.png)
+
+![Daily Commits Rolling Average](plots/ts_03_daily_commits_rolling.png)
+
+![Cumulative Committers](plots/ts_02_cumulative_committers.png)
+
+![Hour of Day Distribution](plots/ts_11_hour_of_day.png)
+
+![Top 10 Concentration](plots/ts_12_top10_concentration.png)
+
+![FreeBSD Commit Heatmap](plots/ts_13_freebsd_heatmap.png)
+
+![FreeBSD Signups vs Committers](plots/ts_05_freebsd_signups_vs_committers.png)
+
+![Day of Week Patterns](plots/ts_06_day_of_week.png)
 
 ## Project totals
 
