@@ -3,7 +3,8 @@ Title: Commit and Contributor Statistics for Major Open Source Projects
 Version: 0.1.0
 Authors@R:
     person("Christos", "Longros", , "chris.longros@gmail.com",
-           role = c("aut", "cre"))
+           role = c("aut", "cre"),
+           comment = c(ORCID = "0009-0001-2717-0857"))
 Description: Over 30 years of daily commit activity and contributor growth
     for FreeBSD, OpenBSD, NetBSD, and PostgreSQL. Built from cloned git
     repositories for complete coverage -- not limited by API quotas.
