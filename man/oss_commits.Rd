@@ -25,7 +25,7 @@
 \examples{
 data(oss_commits)
 fb <- oss_commits[oss_commits$project == "freebsd", ]
-hours <- as.integer(format(fb$timestamp, "\%H"))
+hours <- as.POSIXlt(fb$timestamp)$hour
 hist(hours, breaks = 0:24, main = "FreeBSD Commits by Hour of Day",
      xlab = "Hour (UTC)", col = "steelblue")
 }

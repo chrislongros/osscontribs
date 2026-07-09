@@ -6,10 +6,10 @@ Authors@R:
            role = c("aut", "cre"),
            comment = c(ORCID = "0009-0001-2717-0857"))
 Description: Over 30 years of daily commit activity and contributor growth
-    for FreeBSD, OpenBSD, NetBSD, and PostgreSQL. Built from cloned git
+    for 'FreeBSD', 'OpenBSD', 'NetBSD', and 'PostgreSQL'. Built from cloned git
     repositories for complete coverage -- not limited by API quotas.
     Includes daily commits, daily new committers, weekly aggregates, and
-    Phabricator signup data. Designed for time series analysis, growth
+    'Phabricator' sign-up data. Designed for time series analysis, growth
     modeling, and cross-project comparison. Contains no personal data.
 License: CC0
 Encoding: UTF-8
